@@ -94,4 +94,8 @@ public class MainActivity extends Activity {
 		smsIntent.putExtra("sms_body","Body of Message");
 		startActivity(smsIntent);
 	}
+	
+	public void helloWorld() {
+		
+	}
 }
