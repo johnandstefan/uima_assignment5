@@ -3,12 +3,14 @@ package com.example.ark;
 import java.util.Random;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.PhoneLookup;
 import android.view.Menu;
+import android.view.View;
 
 public class MainActivity extends Activity {
 
@@ -80,5 +82,13 @@ public class MainActivity extends Activity {
 			}
 		}
 		return ret;
+	}
+	
+	public void sendMessage(View V) {
+		Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+		smsIntent.setType("vnd.android-dir/mms-sms");
+		smsIntent.putExtra("address", "12125551212");
+		smsIntent.putExtra("sms_body","Body of Message");
+		startActivity(smsIntent);
 	}
 }

@@ -36,6 +36,7 @@
         android:layout_below="@id/main_title"
         android:layout_alignParentRight="true"
         android:layout_marginBottom="100dp"
+        android:onClick=""
         />
     
     <EditText 
@@ -48,6 +49,14 @@
         android:ems="10"
         />
     
+    <TextView
+        android:id="@+id/contact_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/contact_input"
+        android:layout_alignParentLeft="true"
+        />
+    
    	<Button 
         android:id="@+id/randomize_recipient"
         android:text="@string/randomize"
@@ -56,6 +65,7 @@
         android:layout_toRightOf="@id/contact_input"
         android:layout_below="@id/randomize_text"
         android:layout_alignParentRight="true"
+        android:onClick=""
         />
    	
    	<Button
@@ -65,6 +75,7 @@
    	    android:layout_height="wrap_content"
    	    android:layout_width="wrap_content"
    	    android:layout_centerInParent="true"
+   	    android:onClick="sendMessage"
    	    
    	    />
 
