@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 
 
-		EditText editBox = (EditText) findViewById(R.id.contact_input);
+		EditText editBox = (EditText) findViewById(R.id.contact_number);
 		editBox.addTextChangedListener(new TextWatcher(){
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
 			public void afterTextChanged(Editable s) {
 				//done after the focus has change from the edit box
 				//AND TEXT HAS CHANGED
-				((TextView) findViewById(R.id.contact_number)).setText("");
+				((TextView) findViewById(R.id.contact_name)).setText("");
 			}
 
 		});
@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 	 * launch contact picker intent
 	 * from: http://developer.android.com/training/basics/intents/result.html
 	 */
-	private void pickContact() {
+	public void pickContact() {
 		Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
 		pickContactIntent.setType(Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
 		startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
@@ -101,8 +101,8 @@ public class MainActivity extends Activity {
 
 				// Do something with the phone number...
 				//"@+id/contact_input"
-				((EditText) findViewById(R.id.contact_input)).setText(name);
-				((TextView) findViewById(R.id.contact_number)).setText(number);
+				((EditText) findViewById(R.id.contact_number)).setText(name);
+				((TextView) findViewById(R.id.contact_name)).setText(number);
 			}
 		}
 	}
@@ -113,12 +113,12 @@ public class MainActivity extends Activity {
 	 * gets the first number
 	 * @return String[] string[0] = name, string[1] = phone number. may == null.
 	 */
-	private String[] pickRandomContact() {
+	public void pickRandomContact() {
 		Cursor mc = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
 		int size = mc.getCount();
 		boolean found = false;
 		Random rand = new Random();
-		String ret[] = null;
+		//String ret[] = null;
 
 		while (!found) {
 			int pos = rand.nextInt(size);
@@ -136,9 +136,11 @@ public class MainActivity extends Activity {
 						ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ name, null, null); 
 
 				//init return string
-				ret = new String[2];
-				ret[0] = name;
-
+				//ret = new String[2];
+				//ret[0] = name;
+				((EditText) findViewById(R.id.contact_number)).setText(name);
+				
+				
 				boolean first = true;
 				String phoneNumber = "";
 				while (numbers.moveToNext()) { 
@@ -147,20 +149,22 @@ public class MainActivity extends Activity {
 						first = false;
 						//add the first number to the return string
 						//***NOTE IT MAY NOT BE A MOBILE
-						ret[1] = phoneNumber;
+						//ret[1] = phoneNumber;
 					} else if (numbers.getInt(numbers.getColumnIndex(Phone.TYPE)) == Phone.TYPE_MOBILE) {
 						phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
 						//close the cursor
 						numbers.close();
+						((TextView) findViewById(R.id.contact_name)).setText(phoneNumber);
+						return;
 						//add the first mobile to the return string
-						ret[1] = phoneNumber;
-						return ret;
+						//ret[1] = phoneNumber;
+						//return ret;
 					}               
 				}
 				numbers.close();
 			}
 		}
-		return ret;
+		//return ret;
 	}
 
 	public void sendMessage(View V) {

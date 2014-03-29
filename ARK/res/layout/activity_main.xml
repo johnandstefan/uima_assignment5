@@ -7,15 +7,14 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context=".MainActivity" >
-    
+
     <TextView
         android:id="@+id/main_title"
-        android:text="@string/main_title"
-        android:layout_height="80dp"
         android:layout_width="match_parent"
-        android:gravity="center|top"  
-        android:textSize="22sp"     
-        />
+        android:layout_height="80dp"
+        android:gravity="center|top"
+        android:text="@string/main_title"
+        android:textSize="22sp" />
 
     <EditText
         android:id="@+id/text_input"
@@ -26,57 +25,62 @@
         android:ems="10"
         android:hint="@string/text_hint" >
     </EditText>
-    
-    <Button 
+
+    <Button
         android:id="@+id/randomize_text"
-        android:text="@string/randomize"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_toRightOf="@id/text_input"
-        android:layout_below="@id/main_title"
         android:layout_alignParentRight="true"
+        android:layout_below="@id/main_title"
         android:layout_marginBottom="100dp"
+        android:layout_toRightOf="@id/text_input"
         android:onClick=""
-        />
-    
-    <EditText 
-        android:id="@+id/contact_input"
-        android:hint="@string/contact_hint"
-		android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_below="@id/randomize_text"
-        android:layout_alignParentLeft="true"
-        android:ems="10"
-        />
-    
-    <TextView
+        android:text="@string/randomize" />
+
+    <EditText
         android:id="@+id/contact_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/contact_input"
         android:layout_alignParentLeft="true"
-        />
-    
-   	<Button 
-        android:id="@+id/randomize_recipient"
-        android:text="@string/randomize"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_toRightOf="@id/contact_input"
         android:layout_below="@id/randomize_text"
+        android:ems="10"
+        android:hint="@string/contact_hint"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/contact_number" />
+
+    <Button
+        android:id="@+id/randomize_recipient"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
+        android:layout_below="@id/randomize_text"
+        android:layout_toRightOf="@id/contact_number"
         android:onClick=""
+        android:text="@string/randomize" />
+
+    <Button
+        android:id="@+id/send"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:onClick="sendMessage"
+        android:text="@string/send" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/contact_number"
+        android:layout_alignLeft="@+id/contact_number"
+        android:text="Button"
+        android:onClick="pickContact"
         />
-   	
-   	<Button
-   	    android:id="@+id/send"
-   	    android:text="@string/send"
-   	    android:layout_alignParentBottom="true"
-   	    android:layout_height="wrap_content"
-   	    android:layout_width="wrap_content"
-   	    android:layout_centerInParent="true"
-   	    android:onClick="sendMessage"
-   	    
-   	    />
 
 </RelativeLayout>
