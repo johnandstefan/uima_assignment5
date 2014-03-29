@@ -27,10 +27,6 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	public void asfkahd() {
-		
-		
-	}
 
 	/**
 	 * Selects a random contact. Ges the first mobile number. if no mobile then
@@ -93,9 +89,5 @@ public class MainActivity extends Activity {
 		smsIntent.putExtra("address", "12125551212");
 		smsIntent.putExtra("sms_body","Body of Message");
 		startActivity(smsIntent);
-	}
-	
-	public void helloWorld() {
-		
 	}
 }
