@@ -5,19 +5,52 @@ import java.util.Random;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.PhoneLookup;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.TextView;
+
 
 public class MainActivity extends Activity {
+	//The request code for the contact picker
+	static private final int PICK_CONTACT_REQUEST = 1;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+
+
+		EditText editBox = (EditText) findViewById(R.id.contact_input);
+		editBox.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+				//done after the focus has change from the edit box
+				//AND TEXT HAS CHANGED
+				((TextView) findViewById(R.id.contact_number)).setText("");
+			}
+
+		});
 	}
 
 	@Override
@@ -27,13 +60,55 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	public void asfkahd() {
-		
-		
+
+	/**
+	 * launch contact picker intent
+	 * from: http://developer.android.com/training/basics/intents/result.html
+	 */
+	private void pickContact() {
+		Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
+		pickContactIntent.setType(Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
+		startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
+	}
+	/**
+	 * parse contact data
+	 * from: http://developer.android.com/training/basics/intents/result.html
+	 */
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		// Check which request it is that we're responding to
+		if (requestCode == PICK_CONTACT_REQUEST) {
+			// Make sure the request was successful
+			if (resultCode == RESULT_OK) {
+				// Get the URI that points to the selected contact
+				Uri contactUri = data.getData();
+				// We only need the NUMBER column, because there will be only one row in the result
+				String[] projection = {Phone.NUMBER};
+
+				// Perform the query on the contact to get the NUMBER column
+				// We don't need a selection or sort order (there's only one result for the given URI)
+				// CAUTION: The query() method should be called from a separate thread to avoid blocking
+				// your app's UI thread. (For simplicity of the sample, this code doesn't do that.)
+				// Consider using CursorLoader to perform the query.
+				Cursor cursor = getContentResolver()
+						.query(contactUri, projection, null, null, null);
+				cursor.moveToFirst();
+
+				// Retrieve the phone number from the NUMBER column
+				String name = cursor.getString(cursor.getColumnIndex(Phone.DISPLAY_NAME));
+				String number = cursor.getString(cursor.getColumnIndex(Phone.NUMBER));
+
+
+				// Do something with the phone number...
+				//"@+id/contact_input"
+				((EditText) findViewById(R.id.contact_input)).setText(name);
+				((TextView) findViewById(R.id.contact_number)).setText(number);
+			}
+		}
 	}
 
 	/**
-	 * Selects a random contact. Ges the first mobile number. if no mobile then
+	 * Selects a random contact. Gets the first mobile number. if no mobile then
 	 * gets the first number
 	 * @return String[] string[0] = name, string[1] = phone number. may == null.
 	 */
@@ -86,16 +161,12 @@ public class MainActivity extends Activity {
 		}
 		return ret;
 	}
-	
+
 	public void sendMessage(View V) {
 		Intent smsIntent = new Intent(Intent.ACTION_VIEW);
 		smsIntent.setType("vnd.android-dir/mms-sms");
 		smsIntent.putExtra("address", "12125551212");
 		smsIntent.putExtra("sms_body","Body of Message");
 		startActivity(smsIntent);
-	}
-	
-	public void helloWorld() {
-		
 	}
 }
