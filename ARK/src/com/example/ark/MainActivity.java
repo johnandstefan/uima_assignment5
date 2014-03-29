@@ -47,11 +47,31 @@ public class MainActivity extends Activity {
 			public void afterTextChanged(Editable s) {
 				//done after the focus has change from the edit box
 				//AND TEXT HAS CHANGED
-				//((TextView) findViewById(R.id.contact_name)).setText("");
+				//
+
+				
+				int count = ((EditText) findViewById(R.id.contact_number)).getText().toString().replaceAll("\\D", "").length();
+				if (count >= 10) {
+					String name = findName();
+					if (name != null) {
+						
+					} else {
+						((TextView) findViewById(R.id.contact_name)).setText("");
+					}
+					//lookup name
+					//if found, add text, if not set text to ""
+				} else {
+					((TextView) findViewById(R.id.contact_name)).setText("");
+				}
+
 			}
+
 
 		});
 	}
+	
+	
+
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -138,8 +158,8 @@ public class MainActivity extends Activity {
 				//ret = new String[2];
 				//ret[0] = name;
 				((EditText) findViewById(R.id.contact_number)).setText(name);
-				
-				
+
+
 				boolean first = true;
 				String phoneNumber = "";
 				while (numbers.moveToNext()) { 
