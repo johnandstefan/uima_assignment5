@@ -47,7 +47,7 @@ public class MainActivity extends Activity {
 			public void afterTextChanged(Editable s) {
 				//done after the focus has change from the edit box
 				//AND TEXT HAS CHANGED
-				((TextView) findViewById(R.id.contact_name)).setText("");
+				//((TextView) findViewById(R.id.contact_name)).setText("");
 			}
 
 		});
@@ -65,7 +65,7 @@ public class MainActivity extends Activity {
 	 * launch contact picker intent
 	 * from: http://developer.android.com/training/basics/intents/result.html
 	 */
-	public void pickContact() {
+	public void pickContact(View view) {
 		Intent pickContactIntent = new Intent(Intent.ACTION_PICK, Uri.parse("content://contacts"));
 		pickContactIntent.setType(Phone.CONTENT_TYPE); // Show user only contacts w/ phone numbers
 		startActivityForResult(pickContactIntent, PICK_CONTACT_REQUEST);
@@ -83,7 +83,7 @@ public class MainActivity extends Activity {
 				// Get the URI that points to the selected contact
 				Uri contactUri = data.getData();
 				// We only need the NUMBER column, because there will be only one row in the result
-				String[] projection = {Phone.NUMBER};
+				String[] projection = {Phone.NUMBER, Phone.DISPLAY_NAME};
 
 				// Perform the query on the contact to get the NUMBER column
 				// We don't need a selection or sort order (there's only one result for the given URI)
@@ -100,9 +100,8 @@ public class MainActivity extends Activity {
 
 
 				// Do something with the phone number...
-				//"@+id/contact_input"
-				((EditText) findViewById(R.id.contact_number)).setText(name);
-				((TextView) findViewById(R.id.contact_name)).setText(number);
+				((TextView) findViewById(R.id.contact_name)).setText(name);
+				((EditText) findViewById(R.id.contact_number)).setText(number);
 			}
 		}
 	}
@@ -113,7 +112,7 @@ public class MainActivity extends Activity {
 	 * gets the first number
 	 * @return String[] string[0] = name, string[1] = phone number. may == null.
 	 */
-	public void pickRandomContact() {
+	public void pickRandomContact(View view) {
 		Cursor mc = getContentResolver().query(ContactsContract.Contacts.CONTENT_URI,null,null,null,null);
 		int size = mc.getCount();
 		boolean found = false;

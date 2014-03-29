@@ -61,7 +61,7 @@
         android:layout_alignParentRight="true"
         android:layout_below="@id/randomize_text"
         android:layout_toRightOf="@id/contact_number"
-        android:onClick=""
+        android:onClick="pickRandomContact"
         android:text="@string/randomize" />
 
     <Button
@@ -79,8 +79,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/contact_number"
         android:layout_alignLeft="@+id/contact_number"
-        android:text="Button"
         android:onClick="pickContact"
-        />
+        android:text="Button" />
 
 </RelativeLayout>
