@@ -27,7 +27,10 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-
+	public void asfkahd() {
+		
+		
+	}
 
 	/**
 	 * Selects a random contact. Ges the first mobile number. if no mobile then
