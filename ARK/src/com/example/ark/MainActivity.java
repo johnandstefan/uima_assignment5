@@ -60,7 +60,6 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-<<<<<<< HEAD
 
 	/**
 	 * launch contact picker intent
@@ -107,8 +106,7 @@ public class MainActivity extends Activity {
 			}
 		}
 	}
-=======
->>>>>>> eeb30c5bc6e977e892a1b3163ac2d07102bffeb8
+
 
 	/**
 	 * Selects a random contact. Gets the first mobile number. if no mobile then
