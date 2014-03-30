@@ -3,10 +3,12 @@ package com.example.ark;
 import java.util.Random;
 
 import android.app.Activity;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.PhoneLookup;
@@ -49,14 +51,15 @@ public class MainActivity extends Activity {
 				//AND TEXT HAS CHANGED
 				//
 
-				
-				int count = ((EditText) findViewById(R.id.contact_number)).getText().toString().replaceAll("\\D", "").length();
+				String number = ((EditText) findViewById(R.id.contact_number)).getText().toString().replaceAll("\\D", "");
+				int count = number.length();
+
 				if (count >= 10) {
-					String name = findName();
-					if (name != null) {
-						
-					} else {
+					String name = findName(number);
+					if (name == null) {
 						((TextView) findViewById(R.id.contact_name)).setText("");
+					} else {
+						((TextView) findViewById(R.id.contact_name)).setText(name);
 					}
 					//lookup name
 					//if found, add text, if not set text to ""
@@ -69,8 +72,33 @@ public class MainActivity extends Activity {
 
 		});
 	}
-	
-	
+
+	/**
+	 * From: http://stackoverflow.com/questions/3712112/search-contact-by-phone-number
+	 * @param number
+	 * @return
+	 */
+	private String findName(String number) {
+		Uri uri = Uri.withAppendedPath(ContactsContract.PhoneLookup.CONTENT_FILTER_URI, Uri.encode(number));
+		String name = null;
+
+		ContentResolver contentResolver = getContentResolver();
+		Cursor contactLookup = contentResolver.query(uri, new String[] {BaseColumns._ID,
+				ContactsContract.PhoneLookup.DISPLAY_NAME }, null, null, null);
+
+		try {
+			if (contactLookup != null && contactLookup.getCount() > 0) {
+				contactLookup.moveToNext();
+				name = contactLookup.getString(contactLookup.getColumnIndex(ContactsContract.Data.DISPLAY_NAME));
+				//String contactId = contactLookup.getString(contactLookup.getColumnIndex(BaseColumns._ID));
+			}
+		} finally {
+			if (contactLookup != null) {
+				contactLookup.close();
+			}
+		}
+		return name;
+	}
 
 
 	@Override
@@ -129,7 +157,8 @@ public class MainActivity extends Activity {
 
 	/**
 	 * Selects a random contact. Gets the first mobile number. if no mobile then
-	 * gets the first number
+	 * gets the first number.
+	 * ***NOTE*** Must set name after number because the text listener will delete it....
 	 * @return String[] string[0] = name, string[1] = phone number. may == null.
 	 */
 	public void pickRandomContact(View view) {
@@ -137,7 +166,6 @@ public class MainActivity extends Activity {
 		int size = mc.getCount();
 		boolean found = false;
 		Random rand = new Random();
-		//String ret[] = null;
 
 		while (!found) {
 			int pos = rand.nextInt(size);
@@ -145,45 +173,40 @@ public class MainActivity extends Activity {
 			//get the name of the contact at a random position
 			String name = mc.getString(mc.getColumnIndex(PhoneLookup.DISPLAY_NAME));
 			//check if the name of the contact has a phone number
-			found = Boolean.parseBoolean(mc.getString(mc.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))); 
-
+			//from: ?
+			found = (Integer.parseInt(mc.getString(mc.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0);
 			//if it is found, 
 			if (found) {
-				//gets all the phone numbers associated with the contact
-				Cursor numbers = getContentResolver().query( 
-						ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, 
-						ContactsContract.CommonDataKinds.Phone.CONTACT_ID +" = "+ name, null, null); 
-
-				//init return string
-				//ret = new String[2];
-				//ret[0] = name;
-				((EditText) findViewById(R.id.contact_number)).setText(name);
-
+				//iterating through possibly phone numbers from:
+				//http://examples.javacodegeeks.com/android/core/provider/android-contacts-example/
+				//and here:
+				//http://stackoverflow.com/questions/2356084/read-all-contacts-phone-numbers-in-android
+				String id = mc.getString(mc.getColumnIndex(ContactsContract.Contacts._ID));
+				Cursor numbers = getContentResolver().query(
+						ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
+						ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?",
+						new String[] {id}, null);
 
 				boolean first = true;
 				String phoneNumber = "";
-				while (numbers.moveToNext()) { 
+				while (numbers.moveToNext()){ 
 					if (first) {
 						phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
 						first = false;
-						//add the first number to the return string
-						//***NOTE IT MAY NOT BE A MOBILE
-						//ret[1] = phoneNumber;
 					} else if (numbers.getInt(numbers.getColumnIndex(Phone.TYPE)) == Phone.TYPE_MOBILE) {
-						phoneNumber = numbers.getString(numbers.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
+						phoneNumber = numbers.getString(numbers.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+						((EditText) findViewById(R.id.contact_number)).setText(phoneNumber);
+						((TextView) findViewById(R.id.contact_name)).setText(name);
 						//close the cursor
 						numbers.close();
-						((TextView) findViewById(R.id.contact_name)).setText(phoneNumber);
 						return;
-						//add the first mobile to the return string
-						//ret[1] = phoneNumber;
-						//return ret;
 					}               
 				}
+				((EditText) findViewById(R.id.contact_number)).setText(phoneNumber);
+				((TextView) findViewById(R.id.contact_name)).setText(name);
 				numbers.close();
 			}
 		}
-		//return ret;
 	}
 
 	public void sendMessage(View V) {
