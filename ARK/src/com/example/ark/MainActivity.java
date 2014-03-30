@@ -16,6 +16,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -30,26 +31,15 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-
-		EditText editBox = (EditText) findViewById(R.id.contact_number);
-		editBox.addTextChangedListener(new TextWatcher(){
+		EditText numberBox = (EditText) findViewById(R.id.contact_number);
+		numberBox.addTextChangedListener(new TextWatcher(){
 			@Override
-			public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-				// TODO Auto-generated method stub
-			}
-
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
 			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-				// TODO Auto-generated method stub
-			}
-
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				//done after the focus has change from the edit box
-				//AND TEXT HAS CHANGED
-				//
+				validateSendButton();
 
 				String number = ((EditText) findViewById(R.id.contact_number)).getText().toString().replaceAll("\\D", "");
 				int count = number.length();
@@ -61,16 +51,47 @@ public class MainActivity extends Activity {
 					} else {
 						((TextView) findViewById(R.id.contact_name)).setText(name);
 					}
-					//lookup name
-					//if found, add text, if not set text to ""
 				} else {
 					((TextView) findViewById(R.id.contact_name)).setText("");
 				}
-
 			}
-
-
 		});
+
+		EditText messageBox = (EditText) findViewById(R.id.text_input);
+		messageBox.addTextChangedListener(new TextWatcher(){
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {}
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+			@Override
+			public void afterTextChanged(Editable s) {
+				validateSendButton();
+			}
+		});
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		validateSendButton();
+	}
+
+	private boolean validateSendButton() {
+		//if there is a message to send, the messageBox is valid
+		boolean mbValid = ((EditText) findViewById(R.id.text_input)).getText().toString().length() > 0;
+		//if there is a valid number, the contact number is valid
+		boolean cnValid = ((EditText) findViewById(R.id.contact_number)).getText().toString().length() > 0;
+		Button b = ((Button) findViewById(R.id.send));
+		if (mbValid && cnValid) {
+			//if both valid, validate the sending button
+			b.setClickable(true);
+			b.setEnabled(true);
+			return true;
+		}
+		//if either are invalid, invalidate the sending button
+		b.setClickable(false);
+		b.setEnabled(false);
+		return false;
 	}
 
 	/**
@@ -210,10 +231,23 @@ public class MainActivity extends Activity {
 	}
 
 	public void sendMessage(View V) {
-		Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-		smsIntent.setType("vnd.android-dir/mms-sms");
-		smsIntent.putExtra("address", "12125551212");
-		smsIntent.putExtra("sms_body","Body of Message");
-		startActivity(smsIntent);
+		if (validateSendButton()){
+			/*
+			  Send from this app
+			  SmsManager.getDefault().sendTextMessage("Phone Number", null, "Message", null, null);
+			 */
+			//open sms app. does not open what i have for default though
+
+			Intent smsIntent = new Intent(Intent.ACTION_VIEW);
+			smsIntent.setType("vnd.android-dir/mms-sms");
+
+			String address = ((EditText) findViewById(R.id.contact_number)).getText().toString();
+			smsIntent.putExtra("address", address);
+
+			String text = ((EditText) findViewById(R.id.text_input)).getText().toString();
+			smsIntent.putExtra("sms_body", text);
+
+			startActivity(smsIntent);
+		}
 	}
 }
