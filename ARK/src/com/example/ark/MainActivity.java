@@ -25,6 +25,7 @@ public class MainActivity extends Activity {
 	//The request code for the contact picker
 	static private final int PICK_CONTACT_REQUEST = 1;
 
+	//load messages. 
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
