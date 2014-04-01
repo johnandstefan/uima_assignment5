@@ -1,6 +1,8 @@
 package com.example.ark;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -74,8 +76,22 @@ public class messagesDB{
 	}
 	
 	
-	public Cursor getAllMessages(String order) {
-		return db.query(MESSAGES, ARK_COLS, null, null, null, null, order);
+	public Cursor getMessageCursor() {
+		return db.query(MESSAGES, ARK_COLS, null, null, null, null, MESSAGE_VALUE);
+	}
+	
+	public List<String> getAllMessages() {
+		List<String> messages = new ArrayList<String>();
+		Cursor cursor = this.getMessageCursor();
+		//TEST THIS
+		//http://www.androidhive.info/2012/06/android-populating-spinner-data-from-sqlite-database/
+		if (cursor.moveToFirst()) {
+            do {
+            	messages.add(cursor.getString(1));
+            } while (cursor.moveToNext());
+        }
+		cursor.close();
+		return messages;
 	}
 	
 	private static class ARKdbHelper extends SQLiteOpenHelper {

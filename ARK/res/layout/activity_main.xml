@@ -80,6 +80,6 @@
         android:layout_above="@+id/contact_number"
         android:layout_alignLeft="@+id/contact_number"
         android:onClick="pickContact"
-        android:text="Button" />
+        android:text="@string/pick_contact" />
 
 </RelativeLayout>

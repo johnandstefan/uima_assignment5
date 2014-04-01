@@ -46,6 +46,7 @@ public final class R {
         public static final int contact_hint=0x7f050006;
         public static final int hello_world=0x7f050002;
         public static final int main_title=0x7f050003;
+        public static final int pick_contact=0x7f050008;
         public static final int randomize=0x7f050005;
         public static final int send=0x7f050007;
         public static final int text_hint=0x7f050004;
