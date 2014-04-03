@@ -16,33 +16,31 @@
         android:text="@string/main_title"
         android:textSize="22sp" />
 
-    <EditText
-        android:id="@+id/text_input"
+    <Button
+        android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/main_title"
-        android:ems="10"
-        android:hint="@string/text_hint" >
-    </EditText>
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:onClick="sendMessage"
+        android:text="@string/send" />
 
     <Button
-        android:id="@+id/randomize_text"
+        android:id="@+id/randomize_recipient"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/main_title"
-        android:layout_marginBottom="100dp"
-        android:layout_toRightOf="@id/text_input"
-        android:onClick=""
+        android:layout_alignRight="@+id/main_title"
+        android:layout_alignTop="@+id/text_input"
+        android:onClick="pickRandomContact"
         android:text="@string/randomize" />
 
     <EditText
         android:id="@+id/contact_number"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/randomize_text"
+        android:layout_alignBaseline="@+id/randomize_text"
+        android:layout_alignBottom="@+id/randomize_text"
+        android:layout_toLeftOf="@+id/randomize_text"
         android:ems="10"
         android:hint="@string/contact_hint"
         android:inputType="number" />
@@ -55,31 +53,50 @@
         android:layout_below="@id/contact_number" />
 
     <Button
-        android:id="@+id/randomize_recipient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@id/randomize_text"
-        android:layout_toRightOf="@id/contact_number"
-        android:onClick="pickRandomContact"
-        android:text="@string/randomize" />
-
-    <Button
-        android:id="@+id/send"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:onClick="sendMessage"
-        android:text="@string/send" />
-
-    <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/contact_number"
-        android:layout_alignLeft="@+id/contact_number"
+        android:layout_below="@+id/randomize_recipient"
+        android:layout_marginTop="49dp"
+        android:layout_toRightOf="@+id/contact_number"
         android:onClick="pickContact"
         android:text="@string/pick_contact" />
+
+    <Button
+        android:id="@+id/randomize_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/randomize_recipient"
+        android:layout_below="@+id/button1"
+        android:text="@string/randomize" />
+
+    <EditText
+        android:id="@+id/text_input"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/main_title"
+        android:layout_below="@+id/main_title"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/text_hint" >
+
+        <requestFocus />
+    </EditText>
+
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/randomize_recipient"
+        android:layout_alignLeft="@+id/main_title" />
+
+    <Button
+        android:id="@+id/add_message"
+        style="?android:attr/buttonStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/randomize_recipient"
+        android:layout_below="@+id/randomize_recipient"
+        android:text="Add Message" />
 
 </RelativeLayout>

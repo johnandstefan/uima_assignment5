@@ -1,5 +1,6 @@
 package com.example.ark;
 
+import java.util.List;
 import java.util.Random;
 
 import android.app.Activity;
@@ -16,12 +17,17 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 
 public class MainActivity extends Activity {
+	messagesDB db;
 	//The request code for the contact picker
 	static private final int PICK_CONTACT_REQUEST = 1;
 
@@ -40,7 +46,7 @@ public class MainActivity extends Activity {
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				validateSendButton();
+				validateButtons();
 
 				String number = ((EditText) findViewById(R.id.contact_number)).getText().toString().replaceAll("\\D", "");
 				int count = number.length();
@@ -66,32 +72,100 @@ public class MainActivity extends Activity {
 			public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 			@Override
 			public void afterTextChanged(Editable s) {
-				validateSendButton();
+				validateButtons();
 			}
 		});
+
+		db = new messagesDB(this);
+
+		//set up the spinner
+		//from: http://www.androidhive.info/2012/06/android-populating-spinner-data-from-sqlite-database/
+		Spinner spinner = (Spinner) findViewById(R.id.spinner);
+		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+			public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+				// On selecting a spinner item
+				String message = parent.getItemAtPosition(position).toString();
+
+				//set text
+				((EditText) findViewById(R.id.text_input)).setText(message);
+			}
+
+			public void onNothingSelected(AdapterView<?> arg0) {
+				// TODO Auto-generated method stub
+
+			}
+		}); //spinner click listener
+		loadSpinnerData();
+		((Button) findViewById(R.id.add_message)).setOnClickListener(new View.OnClickListener(){
+			@Override
+			public void onClick(View arg0) {
+				String message = ((EditText) findViewById(R.id.text_input)).getText().toString();
+				db.open();
+				// inserting new label into database
+				db.insertMessage(message);
+				db.close();
+				// loading spinner with newly added data
+				loadSpinnerData();
+			}
+		});
+
 	}
+
+	/**
+	 * Function to load the spinner data from SQLite database
+	 * from: http://www.androidhive.info/2012/06/android-populating-spinner-data-from-sqlite-database/
+	 * */
+	private void loadSpinnerData() {
+		db.open();
+		// Spinner Drop down elements
+		List<String> messages = db.getAllMessages();
+
+		// Creating adapter for spinner
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(this,
+				android.R.layout.simple_spinner_item, messages);
+
+		// Drop down layout style - list view with radio button
+		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+		// attaching data adapter to spinner
+		((Spinner) findViewById(R.id.spinner)).setAdapter(dataAdapter);
+		db.close();
+	}
+
+
 
 	@Override
 	public void onResume() {
 		super.onResume();
-		validateSendButton();
+		validateButtons();
 	}
 
-	private boolean validateSendButton() {
+	private boolean validateButtons() {
 		//if there is a message to send, the messageBox is valid
 		boolean mbValid = ((EditText) findViewById(R.id.text_input)).getText().toString().length() > 0;
 		//if there is a valid number, the contact number is valid
 		boolean cnValid = ((EditText) findViewById(R.id.contact_number)).getText().toString().length() > 0;
-		Button b = ((Button) findViewById(R.id.send));
+		Button send = ((Button) findViewById(R.id.send));
+		Button addMessage = ((Button) findViewById(R.id.add_message));
+
+		if (!mbValid) {
+			send.setClickable(false);
+			send.setEnabled(false);
+		}
+
 		if (mbValid && cnValid) {
+			addMessage.setClickable(true);
+			addMessage.setEnabled(true);
+
 			//if both valid, validate the sending button
-			b.setClickable(true);
-			b.setEnabled(true);
+			send.setClickable(true);
+			send.setEnabled(true);
 			return true;
 		}
 		//if either are invalid, invalidate the sending button
-		b.setClickable(false);
-		b.setEnabled(false);
+		send.setClickable(false);
+		send.setEnabled(false);
 		return false;
 	}
 
@@ -232,7 +306,7 @@ public class MainActivity extends Activity {
 	}
 
 	public void sendMessage(View V) {
-		if (validateSendButton()){
+		if (validateButtons()){
 			/*
 			  Send from this app
 			  SmsManager.getDefault().sendTextMessage("Phone Number", null, "Message", null, null);

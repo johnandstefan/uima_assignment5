@@ -76,6 +76,7 @@ public class messagesDB{
 	}
 	
 	
+	//THIS DOES NOT WORK
 	public Cursor getMessageCursor() {
 		return db.query(MESSAGES, ARK_COLS, null, null, null, null, MESSAGE_VALUE);
 	}
