@@ -105,11 +105,12 @@ public class MainActivity extends Activity {
 				String message = textBox.getText().toString();
 				db.open();
 				// inserting new label into database
-				db.insertMessage(message);
+				long success = db.insertMessage(message);
 				db.close();
 				// loading spinner with newly added data
 				loadSpinnerData();
-				textBox.setText(message);
+				if (success != -1) 
+					textBox.setText(message);
 			}
 		});
 
@@ -156,11 +157,12 @@ public class MainActivity extends Activity {
 			addMessage.setClickable(false);
 			addMessage.setEnabled(false);
 		}
-
-		if (mbValid && cnValid) {
+		if (mbValid) {
+			//if messagebox is not empty, set addMessage to clickable
 			addMessage.setClickable(true);
 			addMessage.setEnabled(true);
-
+		}
+		if (mbValid && cnValid) {
 			//if both valid, validate the sending button
 			send.setClickable(true);
 			send.setEnabled(true);
@@ -251,6 +253,20 @@ public class MainActivity extends Activity {
 				((EditText) findViewById(R.id.contact_number)).setText(number);
 			}
 		}
+	}
+	
+	public void pickRandomMessage(View view) {
+		Random rand = new Random();
+		List<String> allMessages = db.getAllMessages();
+		
+		//randomly select a position based on the size of the message list
+		int position = rand.nextInt(allMessages.size());
+		
+		//set messageBox and spinner each to have the same random message
+		EditText messageBox = (EditText) findViewById(R.id.text_input);
+		Spinner spinner = (Spinner) findViewById(R.id.spinner);
+		messageBox.setText(allMessages.get(position));
+		spinner.setSelection(position);
 	}
 
 

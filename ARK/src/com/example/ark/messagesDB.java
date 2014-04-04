@@ -29,8 +29,8 @@ public class messagesDB{
 	public static final String[] ARK_COLS = {MESSAGE_VALUE};
 
 	private static final String[] DEFAULT_MESSAGES = {
-		"You rock!", "BLARGH",
-		"BLARGH-ASDFHJKASFHJKLADSF", "AJKLSFJKDSFASFS"
+		"You rock!", "You're my favorite deputy",
+		"You're beautiful", "You deserve to be happy", "I believe in you!"
 	};
 
 	public messagesDB(Context context) {
@@ -76,11 +76,12 @@ public class messagesDB{
 	}
 
 
-	//THIS DOES NOT WORK
+	//Fixed! 
 	public Cursor getMessageCursor() {
 		try {
+			//Need to open database before querying, otherwise get NullPointerException
+			this.open();
 			return db.query(MESSAGES, ARK_COLS, null, null, null, null, MESSAGE_VALUE);
-			//db.query(table, columns, selection, selectionArgs, groupBy, having, orderBy)
 		} catch (Exception e) {
 			
 		}
@@ -90,7 +91,6 @@ public class messagesDB{
 	public List<String> getAllMessages() {
 		List<String> messages = new ArrayList<String>();
 		Cursor cursor = this.getMessageCursor();
-		//TEST THIS
 		//http://www.androidhive.info/2012/06/android-populating-spinner-data-from-sqlite-database/
 		if (cursor.moveToFirst()) {
 			do {
@@ -106,7 +106,7 @@ public class messagesDB{
 		// SQL statement to create a new database
 		private static final String DB_CREATE =
 				"CREATE TABLE " + MESSAGES + " (" +
-						MESSAGE_VALUE + " TEXT);";
+						MESSAGE_VALUE + " TEXT unique);";
 
 		public ARKdbHelper(Context context, String name, CursorFactory fct, int version) {
 			super(context, name, fct, version);
