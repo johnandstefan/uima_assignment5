@@ -87,6 +87,7 @@ public class MainActivity extends Activity {
 				// On selecting a spinner item
 				String message = parent.getItemAtPosition(position).toString();
 
+				
 				//set text
 				((EditText) findViewById(R.id.text_input)).setText(message);
 			}
@@ -100,13 +101,15 @@ public class MainActivity extends Activity {
 		((Button) findViewById(R.id.add_message)).setOnClickListener(new View.OnClickListener(){
 			@Override
 			public void onClick(View arg0) {
-				String message = ((EditText) findViewById(R.id.text_input)).getText().toString();
+				EditText textBox = (EditText) findViewById(R.id.text_input);
+				String message = textBox.getText().toString();
 				db.open();
 				// inserting new label into database
 				db.insertMessage(message);
 				db.close();
 				// loading spinner with newly added data
 				loadSpinnerData();
+				textBox.setText(message);
 			}
 		});
 
@@ -150,8 +153,8 @@ public class MainActivity extends Activity {
 		Button addMessage = ((Button) findViewById(R.id.add_message));
 
 		if (!mbValid) {
-			send.setClickable(false);
-			send.setEnabled(false);
+			addMessage.setClickable(false);
+			addMessage.setEnabled(false);
 		}
 
 		if (mbValid && cnValid) {
