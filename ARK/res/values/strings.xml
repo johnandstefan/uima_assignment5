@@ -5,10 +5,13 @@
     <string name="action_settings">Settings</string>
 	<string name="main_title">Acts of Random Kindness</string>    
 	<string name="text_hint">Your Text</string>
-	<string name="randomize_recipient">Randomize recipient</string>
-	<string name="randomize_text">Randomize message</string>
+	<string name="randomize_recipient">Random recipient</string>
+	<string name="randomize_text">Random message</string>
 	<string name="contact_hint">Recipient</string>
 	<string name="send">Send!</string>
 	<string name="pick_contact">Pick Contact</string>
 	<string name="add_message">Add Message</string>
+	<string name="add_photo">Select Photo</string>
+	<string name="take_photo">Take Photo</string>
+	<string name="remove_photo">Remove Photo</string>
 </resources>

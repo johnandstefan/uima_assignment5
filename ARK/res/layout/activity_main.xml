@@ -11,12 +11,151 @@
     <TextView
         android:id="@+id/main_title"
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
         android:gravity="center|top"
         android:text="@string/main_title"
         android:textSize="22sp" />
+    
+    <Spinner
+        android:id="@+id/spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+		android:layout_below="@id/main_title"
+         />
+    
+    <EditText
+        android:id="@+id/text_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/spinner"
+        android:hint="@string/text_hint" >
 
-    <Button
+        <requestFocus />
+    </EditText>
+
+    <LinearLayout
+        android:id="@+id/text_buttons"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/text_input"
+
+        >
+	        
+	    <Button
+	        style="?android:attr/buttonStyleSmall"
+	        android:id="@+id/randomize_text"
+	        android:layout_width="0px"
+	        android:layout_weight="0.5"
+	        android:layout_height="match_parent"
+	        android:onClick="pickRandomMessage"
+	        android:text="@string/randomize_text" />
+	    
+	    <Button
+			style="?android:attr/buttonStyleSmall"
+	        android:id="@+id/add_message"
+			android:layout_width="0px"
+	        android:layout_weight="0.5"	   
+	        android:layout_height="match_parent"
+	        android:text="@string/add_message" />
+	    
+	</LinearLayout>
+
+	<LinearLayout
+	    android:id="@+id/pic_buttons"
+	    android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/text_buttons"
+		>
+	        
+	    <Button
+			style="?android:attr/buttonStyleSmall"
+	        android:id="@+id/take_photo"
+	        android:layout_width="0px"
+	        android:layout_weight="0.5"
+	        android:layout_height="match_parent"
+	        android:onClick="takePhoto"
+	        android:text="@string/take_photo" />
+	    
+	    <Button
+            style="?android:attr/buttonStyleSmall"
+	        android:id="@+id/add_photo"
+			android:layout_width="0px"
+	        android:layout_weight="0.5"	   
+	        android:layout_height="match_parent"
+	        android:onClick="getPhoto"
+	        android:text="@string/add_photo" />
+	    
+	    <Button
+			style="?android:attr/buttonStyleSmall"
+			android:id="@+id/remove_photo"
+			android:layout_width="0px"
+			android:layout_weight="0.5"	   
+	        android:layout_height="match_parent"
+	        android:text="@string/remove_photo"
+	        android:onClick="removePhoto"
+	        />
+	    
+	   </LinearLayout>
+	   
+	<ImageView
+	    android:id="@+id/thumbnail"
+	    android:layout_width="90dp"
+	    android:layout_height="90dp"
+	    android:layout_below="@id/pic_buttons"
+	    android:layout_centerInParent="true"
+	    android:layout_marginTop="20dp"
+	    android:layout_marginBottom="20dp"
+	    />
+	
+    <EditText
+        android:id="@+id/contact_number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignRight="@id/text_input"
+        android:layout_below="@id/thumbnail"
+		android:layout_marginTop="10dp"
+        android:hint="@string/contact_hint"
+        android:inputType="number" />
+    
+
+    <TextView
+        android:id="@+id/contact_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/contact_number" />
+    
+  	<LinearLayout
+	    android:id="@+id/contact_buttons"
+	    android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_below="@id/contact_name"
+		>
+		<Button
+	        android:id="@+id/pick_contact"
+			android:layout_width="0px"
+	        android:layout_weight="0.5"	   
+	        android:layout_height="match_parent"
+	        android:onClick="pickContact"
+	        android:text="@string/pick_contact" />
+	
+	    <Button
+	        android:id="@+id/randomize_recipient"
+	        android:layout_width="0px"
+	        android:layout_weight="0.5"	   
+	        android:layout_height="match_parent"
+	        android:onClick="pickRandomContact"
+	        android:text="@string/randomize_recipient" />
+	</LinearLayout>
+	
+	<Button
         android:id="@+id/send"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -25,80 +164,6 @@
         android:onClick="sendMessage"
         android:text="@string/send" />
 
-    <Button
-        android:id="@+id/randomize_text"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/main_title"
-        android:layout_alignTop="@+id/text_input"
-        android:onClick="pickRandomMessage"
-        android:text="@string/randomize_text" />
 
-    <EditText
-        android:id="@+id/contact_number"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/pick_contact"
-        android:layout_alignParentLeft="true"
-        android:layout_alignRight="@+id/text_input"
-        android:ems="10"
-        android:hint="@string/contact_hint"
-        android:inputType="number" />
-
-    <TextView
-        android:id="@+id/contact_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@id/contact_number" />
-
-    <Button
-        android:id="@+id/randomize_recipient"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/randomize_text"
-        android:layout_below="@+id/pick_contact"
-        android:onClick="pickRandomContact"
-        android:text="@string/randomize_recipient" />
-
-    <EditText
-        android:id="@+id/text_input"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignLeft="@+id/main_title"
-        android:layout_below="@+id/main_title"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:hint="@string/text_hint" >
-
-        <requestFocus />
-    </EditText>
-
-    <Spinner
-        android:id="@+id/spinner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/randomize_text"
-        android:layout_alignLeft="@+id/main_title"
-        android:layout_alignParentRight="true" />
-
-    <Button
-        android:id="@+id/add_message"
-        style="?android:attr/buttonStyleSmall"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/randomize_text"
-        android:layout_below="@+id/randomize_text"
-        android:text="@string/add_message" />
-
-    <Button
-        android:id="@+id/pick_contact"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignRight="@+id/randomize_text"
-        android:layout_below="@+id/add_message"
-        android:layout_marginTop="38dp"
-        android:onClick="pickContact"
-        android:text="@string/pick_contact" />
 
 </RelativeLayout>

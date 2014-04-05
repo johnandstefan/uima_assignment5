@@ -5,14 +5,19 @@ import java.util.Random;
 
 import android.app.Activity;
 import android.content.ContentResolver;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.ThumbnailUtils;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.PhoneLookup;
+import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Menu;
@@ -22,14 +27,22 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends Activity {
 	messagesDB db;
 	//The request code for the contact picker
 	static private final int PICK_CONTACT_REQUEST = 1;
+	static private final int REQUEST_IMAGE_CAPTURE = 2 ; 
+	static private final int SELECT_PHOTO = 3;
+	static private final int SEND_MESSAGE = 4;
+	static private final int THUMBSIZE = 90;
+	private Uri imageUri;
+	private boolean hasPhoto;
 
 	//load messages. 
 
@@ -253,6 +266,45 @@ public class MainActivity extends Activity {
 				((EditText) findViewById(R.id.contact_number)).setText(number);
 			}
 		}
+		
+		else if(requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+			this.imageUri = data.getData();
+			Bundle extras = data.getExtras();
+	        Bitmap image = (Bitmap) extras.get("data");
+	        ImageView thumbnail = (ImageView) findViewById(R.id.thumbnail);
+	        Bitmap thumbImage = ThumbnailUtils.extractThumbnail(image, THUMBSIZE, THUMBSIZE);
+	        thumbnail.setImageBitmap(thumbImage);			
+	        this.hasPhoto = true;	
+		}
+		
+		else if(requestCode == SELECT_PHOTO && resultCode == RESULT_OK) {
+			/* From http://stackoverflow.com/questions/2507898/how-to-pick-an-
+			 * image-from-gallery-sd-card-for-my-app-in-android */
+			
+            this.imageUri = data.getData();
+			String[] filePathColumn = {MediaStore.Images.Media.DATA};
+            Cursor cursor = getContentResolver().query(
+                               this.imageUri, filePathColumn, null, null, null);
+            cursor.moveToFirst();
+            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+            String filePath = cursor.getString(columnIndex);
+            cursor.close();
+	        
+            Bitmap image = BitmapFactory.decodeFile(filePath);            
+	        ImageView thumbnail = (ImageView) findViewById(R.id.thumbnail);
+	        Bitmap thumbImage = ThumbnailUtils.extractThumbnail(image, THUMBSIZE, THUMBSIZE);
+	        thumbnail.setImageBitmap(thumbImage);	
+	        this.hasPhoto = true;	
+		}
+		else if(requestCode == SEND_MESSAGE && resultCode == RESULT_OK) {
+			Context context = getApplicationContext();
+			CharSequence text = "Message Sent Successfully!";
+			int duration = Toast.LENGTH_SHORT;
+
+			Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+		}
+		
 	}
 	
 	public void pickRandomMessage(View view) {
@@ -332,16 +384,48 @@ public class MainActivity extends Activity {
 			 */
 			//open sms app. does not open what i have for default though
 
-			Intent smsIntent = new Intent(Intent.ACTION_VIEW);
-			smsIntent.setType("vnd.android-dir/mms-sms");
+			Intent messageIntent = new Intent(Intent.ACTION_SEND);
+			//messageIntent.setType("vnd.android-dir/mms-sms");
+			messageIntent.setType("image/png");
 
 			String address = ((EditText) findViewById(R.id.contact_number)).getText().toString();
-			smsIntent.putExtra("address", address);
+			messageIntent.putExtra("address", address);
 
 			String text = ((EditText) findViewById(R.id.text_input)).getText().toString();
-			smsIntent.putExtra("sms_body", text);
+			messageIntent.putExtra("sms_body", text);
+			
+			if (this.hasPhoto) {
+				messageIntent.putExtra(Intent.EXTRA_STREAM, this.imageUri);
+			}
 
-			startActivity(smsIntent);
+			startActivityForResult(messageIntent, SEND_MESSAGE);
 		}
+	}
+	
+	public void takePhoto(View view) {
+		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+	    if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+	        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+	    }
+	}
+	
+	public void getPhoto(View view) {
+		Intent getPictureIntent = new Intent(Intent.ACTION_PICK);
+		getPictureIntent.setType("image/*");
+		startActivityForResult(getPictureIntent, SELECT_PHOTO);    
+	}
+	
+	public void removePhoto(View view) {
+		if (this.hasPhoto) {
+			Context context = getApplicationContext();
+			CharSequence text = "Removed photo";
+			int duration = Toast.LENGTH_SHORT;
+
+			Toast toast = Toast.makeText(context, text, duration);
+			toast.show();
+		}
+		this.hasPhoto = false;
+		ImageView thumbnail = (ImageView) findViewById(R.id.thumbnail);
+		thumbnail.setImageDrawable(null);
 	}
 }
